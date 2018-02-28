@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
-		<title>Guu‘s Neverland</title>
-		<description>88888888</description>
+		<title>Guu's Neverland</title>
+		<description>(๑•́ ∀ •̀๑)</description>
 		<link></link>
 		<atom:link href="/rss-feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
-				<title>Welcome to Guu's Neverland!</title>
+				<title>Locust简介及其特点</title>
 				
-					<dc:creator>Paul Le</dc:creator>
+					<dc:creator>Guu</dc:creator>
 				
 				
-					<description>&lt;p&gt;Guu’s Neverland is a minimalist Jekyll theme. The purpose of this theme is to provide a simple, clean, content-focused blogging platform for your personal site or blog. Below you can find everything you need to get started.&lt;/p&gt;
+					<description>&lt;p&gt;Locust是一个简单易用的分布式压测工具，它摒弃了进程和线程，是完全基于事件驱动的，在单机就能模拟上千的并发用户。一般基于事件驱动的压测工具都会使用回调函数的方式，它没有使用回调函数，而是使用了协程机制（具体是用python的gevent实现的），也正因为此，Locust才拥有了在单机模拟数千并发的能力。&lt;/p&gt;
 
 </description>
 				
-				<pubDate>Fri, 01 Jan 2016 00:00:00 +0800</pubDate>
-				<link>/journal/welcome-to-lagrange.html</link>
-				<guid isPermaLink="true">/journal/welcome-to-lagrange.html</guid>
+				<pubDate>Wed, 28 Feb 2018 00:00:00 +0800</pubDate>
+				<link>/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/Locust-1.html</link>
+				<guid isPermaLink="true">/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/Locust-1.html</guid>
 			</item>
 		
 			<item>
