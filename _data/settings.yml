@@ -22,8 +22,8 @@ pagination:
   next_page: '最近'
   previous_page: '更早'
 
-sharing_button_prompt: 'Feel free to share!'
+sharing_button_prompt: '转载请注明出处（https://xuyanghaha.github.io/Guu/）谢谢'
 
-related_posts: 'You may also enjoy:'
+related_posts: '您可能还喜欢：'
 
 post_date_prefix: 'Written on'

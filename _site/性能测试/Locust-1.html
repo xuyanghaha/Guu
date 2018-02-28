@@ -5,7 +5,7 @@
 
   <title>
     
-      Welcome to Guu's Neverland! | Guu‘s Neverland
+      Locust简介及其特点 | Guu's Neverland
     
   </title>
 
@@ -15,9 +15,9 @@
   <link rel="stylesheet" href="/assets/css/main.css">
   <link rel="stylesheet" href="/assets/css/syntax.css">
   <!-- Use Atom -->
-  <link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Guu‘s Neverland" />
+  <link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Guu's Neverland" />
   <!-- Use RSS-2.0 -->
-  <!--<link href="/rss-feed.xml" type="application/rss+xml" rel="alternate" title="Guu‘s Neverland | 88888888"/>
+  <!--<link href="/rss-feed.xml" type="application/rss+xml" rel="alternate" title="Guu's Neverland | (๑•́ ∀ •̀๑)"/>
   //-->
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
@@ -51,8 +51,8 @@
   <div class="container">
     <header class="masthead">
   <h3 class="masthead-title">
-    <a href="/">Guu‘s Neverland</a>
-    <small class="masthead-subtitle">88888888</small>
+    <a href="/">Guu's Neverland</a>
+    <small class="masthead-subtitle">(๑•́ ∀ •̀๑)</small>
     <div class="menu">
   <nav class="menu-content">
     
@@ -70,52 +70,48 @@
 
     <div class="post-container">
       <h1>
-  Welcome to Guu's Neverland!
+  Locust简介及其特点
 </h1>
 
 
   <img src="/assets/img/mountains.jpg">
 
 
-<p>Guu’s Neverland is a minimalist Jekyll theme. The purpose of this theme is to provide a simple, clean, content-focused blogging platform for your personal site or blog. Below you can find everything you need to get started.</p>
+<p>Locust是一个简单易用的分布式压测工具，它摒弃了进程和线程，是完全基于事件驱动的，在单机就能模拟上千的并发用户。一般基于事件驱动的压测工具都会使用回调函数的方式，它没有使用回调函数，而是使用了协程机制（具体是用python的gevent实现的），也正因为此，Locust才拥有了在单机模拟数千并发的能力。</p>
 
-<h3 id="getting-started">Getting Started</h3>
+<h2 id="特点">特点</h2>
+<h3 id="使用python编写测试脚本">使用python编写测试脚本</h3>
+<p>Locust非常轻便，没有笨重的UI和臃肿的XML，但是要求使用者有python基础，因为没有类似JMeter的UI界面，不能鼠标操作几下完成测试计划的配置，具体请求的动作需要使用者自己写python脚本实现。</p>
 
-<p><a href="/journal/getting-started.html">Getting Started</a>: getting started with installing Guu’s Neverland, whether you are completely new to using Jekyll, or simply just migrating to a new Jekyll theme.</p>
+<h3 id="分布式可扩展支持几十万并发">分布式&amp;可扩展–支持几十万并发</h3>
+<p>支持多台机器分布式进行压力测试，由于是基于事件驱动的，单台机器一个进程就能模拟几千的用户数。一部分因为就算你模拟出了那么多用户，他们也不是都同时在访问你的系统。大部分用户都在等待下一步做什么的指示，每一秒的请求数并不等同于有效用户数。</p>
 
-<h3 id="example-content">Example Content</h3>
+<h3 id="有基于web的ui界面">有基于WEB的UI界面</h3>
+<p>提供了WEB界面能展示实时的测试数据，web页面就代表着跨平台而且可以自己根据需要进行扩展。</p>
 
-<p><a href="/journal/text-formatting-examples.html">Text and Formatting</a></p>
+<h3 id="可以测试任何系统">可以测试任何系统</h3>
+<p>因为所有测试场景都是自己通过python定义的，所以理论上它可以测试任何的系统。（嗯嗯，事物都有正反两面，辩证的看问题）</p>
 
-<h3 id="questions">Questions?</h3>
+<h3 id="hackable">Hackable</h3>
+<p>这个特点没有翻译，懂的人都懂。
+被Locust吸引到也正是因为这点，作为我深入学习性能测试工具原理和python语言的最好教材！</p>
 
-<p>This theme is completely free and open source software. You may use it however you want, as it is distributed under the <a href="http://choosealicense.com/licenses/mit/">MIT License</a>. If you are having any problems, any questions or suggestions, feel free to <a href="https://twitter.com/intent/tweet?text=My%question%about%Guu's Neverland%is:%&amp;via=paululele">tweet at me</a>, or <a href="https://github.com/lenpaul/Guu's Neverland/issues/new">file a GitHub issue</a>.</p>
 
 
 <span class="post-date">
   Written on
   
-  January
-  1st
-    ,
-  2016
+  February
+  28th,
+  2018
   by
   
-    Paul Le
+    Guu
   
 </span>
 
-<div class="post-date">Feel free to share!</div>
-  <div class="sharing-icons">
-    <a href="https://twitter.com/intent/tweet?text=Welcome to Guu's Neverland!&amp;url=/journal/welcome-to-lagrange.html" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=/journal/welcome-to-lagrange.html&amp;title=Welcome to Guu's Neverland!" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-    <a href="https://plus.google.com/share?url=/journal/welcome-to-lagrange.html" target="_blank"><i class="fa fa-google-plus" aria-hidden="true"></i></a>
-  </div>
-</div>
-
-
 <div class="related">
-  <h1 >You may also enjoy:</h1>
+  <h1 >您可能还喜欢：</h1>
   
   <ul class="related-posts">
     
@@ -171,7 +167,7 @@
 
     <footer class="footer">
   
-  <div class="post-date"><a href="/menu/about.html">Guu‘s Neverland | 88888888 by Guu</a></div>
+  <div class="post-date"><a href="/menu/about.html">Guu's Neverland | (๑•́ ∀ •̀๑) by Guu</a></div>
 </footer>
 
 
