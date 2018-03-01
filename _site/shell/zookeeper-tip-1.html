@@ -1,0 +1,196 @@
+<!doctype html>
+<html>
+
+<head>
+
+  <title>
+    
+      zookeeper_server.pid: 没有那个文件或目录 | Guu's Neverland
+    
+  </title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/syntax.css">
+  <!-- Use Atom -->
+  <link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Guu's Neverland" />
+  <!-- Use RSS-2.0 -->
+  <!--<link href="/rss-feed.xml" type="application/rss+xml" rel="alternate" title="Guu's Neverland | (๑•́ ∀ •̀๑)"/>
+  //-->
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Code+Pro">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quattrocento+Sans">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <script type="text/javascript" async
+    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+  </script>
+
+  <!-- Google Analytics -->
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-112060364-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <!-- Use Jekyll SEO plugin -->
+
+</head>
+
+
+<body>
+
+  <div class="container">
+    <header class="masthead">
+  <h3 class="masthead-title">
+    <a href="/">Guu's Neverland</a>
+    <small class="masthead-subtitle">(๑•́ ∀ •̀๑)</small>
+    <div class="menu">
+  <nav class="menu-content">
+    
+      <a href="/menu/writing.html">文章列表</a>
+    
+  </nav>
+  <nav class="social-icons">
+    
+  </nav>
+</div>
+
+  </h3>
+</header>
+
+
+    <div class="post-container">
+      <h1>
+  zookeeper_server.pid: 没有那个文件或目录
+</h1>
+
+
+  <img src="/assets/img/cityNight.png">
+
+
+<p>今天捣鼓zookeeper，安装完成启动时却出现了一个奇怪的问题，提示“…/zookeeper/data/zookeeper_server.pid: 没有那个文件或目录 FAILED TO WRITE PID”。如下图：
+<img src="/assets/img/20180301zk_start_failed.png" alt="alt text" title="zookeeper启动失败截图" /></p>
+
+<p>既然提示了103行报错，那索性到zkServe中找找原因吧</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>start<span class="o">)</span>
+    <span class="nb">echo</span>  <span class="nt">-n</span> <span class="s2">"Starting zookeeper ... "</span>
+    <span class="k">if</span> <span class="o">[</span> <span class="nt">-f</span> <span class="nv">$ZOOPIDFILE</span> <span class="o">]</span><span class="p">;</span> <span class="k">then
+      if </span><span class="nb">kill</span> <span class="nt">-0</span> <span class="sb">`</span><span class="nb">cat</span> <span class="nv">$ZOOPIDFILE</span><span class="sb">`</span> <span class="o">&gt;</span> /dev/null 2&gt;&amp;1<span class="p">;</span> <span class="k">then
+         </span><span class="nb">echo</span> <span class="nv">$command</span> already running as process <span class="sb">`</span><span class="nb">cat</span> <span class="nv">$ZOOPIDFILE</span><span class="sb">`</span><span class="nb">.</span> 
+         <span class="nb">exit </span>0
+      <span class="k">fi
+    fi
+    </span>nohup <span class="nv">$JAVA</span> <span class="s2">"-Dzookeeper.log.dir=</span><span class="k">${</span><span class="nv">ZOO_LOG_DIR</span><span class="k">}</span><span class="s2">"</span> <span class="s2">"-Dzookeeper.root.logger=</span><span class="k">${</span><span class="nv">ZOO_LOG4J_PROP</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+    <span class="nt">-cp</span> <span class="s2">"</span><span class="nv">$CLASSPATH</span><span class="s2">"</span> <span class="nv">$JVMFLAGS</span> <span class="nv">$ZOOMAIN</span> <span class="s2">"</span><span class="nv">$ZOOCFG</span><span class="s2">"</span> <span class="o">&gt;</span> <span class="s2">"</span><span class="nv">$_ZOO_DAEMON_OUT</span><span class="s2">"</span> 2&gt;&amp;1 &lt; /dev/null &amp;
+    <span class="k">if</span> <span class="o">[</span> <span class="nv">$?</span> <span class="nt">-eq</span> 0 <span class="o">]</span>
+    <span class="k">then
+      if</span> /bin/echo <span class="nt">-n</span> <span class="nv">$!</span> <span class="o">&gt;</span> <span class="s2">"</span><span class="nv">$ZOOPIDFILE</span><span class="s2">"</span>
+      <span class="k">then
+        </span>sleep 1
+        <span class="nb">echo </span>STARTED
+      <span class="k">else
+        </span><span class="nb">echo </span>FAILED TO WRITE PID
+        <span class="nb">exit </span>1
+      <span class="k">fi</span>
+</code></pre></div></div>
+
+<p>这才想起来Java环境变量没配好，在/etc/profile中添加环境变量并source，但是再次启动zookeeper依旧报同样的错误。
+最终在网上找到一个解答，引用如下：</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>首先知道交互式shell和非交互式shell、登录shell和非登录shell是有区别的
+在登录shell里，环境信息需要读取/etc/profile, ~/.bash_profile, ~/.bash_login, ~/.profile按顺序最先的一个，并执行其中的命令。除非被 —noprofile选项禁止了；
+在非登录shell里，环境信息只读取 /etc/bash .bashrc 和 ~/.bashrc 
+手工执行是属于登陆shell，脚本执行数据非登陆shell，而我的linux环境配置中只对/etc/profile进行了jdk1.6等环境的配
+置，所以脚本执行/usr/local/zookeeper3.4/bin/zkServer.sh start 启动zookeeper失败了
+</code></pre></div></div>
+
+<p>也就是说ZK启动是脚本执行，脚本执行是非登陆shell，非登陆shell读取 /etc/bash .bashrc 和 ~/.bashrc ，我却只设置了/etc/profile，环境变量不会被脚本使用到，当然会因为找不到java启用失败了。</p>
+
+
+
+<span class="post-date">
+  Written on
+  
+  March
+  1st
+    ,
+  2018
+  by
+  
+    Guu
+  
+</span>
+
+<div class="related">
+  <h1 >您可能还喜欢：</h1>
+  
+  <ul class="related-posts">
+    
+      
+        
+        
+      
+        
+          <li>
+            <h3>
+              <a href="/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/Locust-1.html">
+                Locust简介及其特点
+                <!--<img src="http://localhost:4000/images/">-->
+                <!--<small>February 28, 2018</small>-->
+              </a>
+            </h3>
+          </li>
+          
+        
+      
+        
+          <li>
+            <h3>
+              <a href="/journal/getting-started.html">
+                Getting Started
+                <!--<img src="http://localhost:4000/images/">-->
+                <!--<small>October 10, 2015</small>-->
+              </a>
+            </h3>
+          </li>
+          
+        
+      
+    
+      
+        
+        
+      
+        
+        
+      
+        
+        
+      
+    
+  </ul>
+</div>
+
+
+
+
+    </div>
+
+    <footer class="footer">
+  
+  <div class="post-date"><a href="/menu/about.html">Guu's Neverland | (๑•́ ∀ •̀๑) by Guu</a></div>
+</footer>
+
+
+  </div>
+
+</body>
+</html>

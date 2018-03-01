@@ -7,6 +7,22 @@
 		<atom:link href="/rss-feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>zookeeper_server.pid: 没有那个文件或目录</title>
+				
+					<dc:creator>Guu</dc:creator>
+				
+				
+					<description>&lt;p&gt;今天捣鼓zookeeper，安装完成启动时却出现了一个奇怪的问题，提示“…/zookeeper/data/zookeeper_server.pid: 没有那个文件或目录 FAILED TO WRITE PID”。如下图：
+&lt;img src=&quot;/assets/img/20180301zk_start_failed.png&quot; alt=&quot;alt text&quot; title=&quot;zookeeper启动失败截图&quot; /&gt;&lt;/p&gt;
+
+</description>
+				
+				<pubDate>Thu, 01 Mar 2018 00:00:00 +0800</pubDate>
+				<link>http://localhost:4000/shell/zookeeper-tip-1.html</link>
+				<guid isPermaLink="true">http://localhost:4000/shell/zookeeper-tip-1.html</guid>
+			</item>
+		
+			<item>
 				<title>Locust简介及其特点</title>
 				
 					<dc:creator>Guu</dc:creator>
@@ -17,8 +33,8 @@
 </description>
 				
 				<pubDate>Wed, 28 Feb 2018 00:00:00 +0800</pubDate>
-				<link>/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/Locust-1.html</link>
-				<guid isPermaLink="true">/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/Locust-1.html</guid>
+				<link>http://localhost:4000/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/Locust-1.html</link>
+				<guid isPermaLink="true">http://localhost:4000/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/Locust-1.html</guid>
 			</item>
 		
 			<item>
@@ -32,8 +48,8 @@
 </description>
 				
 				<pubDate>Sat, 10 Oct 2015 00:00:00 +0800</pubDate>
-				<link>/journal/getting-started.html</link>
-				<guid isPermaLink="true">/journal/getting-started.html</guid>
+				<link>http://localhost:4000/journal/getting-started.html</link>
+				<guid isPermaLink="true">http://localhost:4000/journal/getting-started.html</guid>
 			</item>
 		
 			<item>
@@ -47,8 +63,8 @@
 </description>
 				
 				<pubDate>Wed, 01 Jan 2014 00:00:00 +0800</pubDate>
-				<link>/journal/text-formatting-examples.html</link>
-				<guid isPermaLink="true">/journal/text-formatting-examples.html</guid>
+				<link>http://localhost:4000/journal/text-formatting-examples.html</link>
+				<guid isPermaLink="true">http://localhost:4000/journal/text-formatting-examples.html</guid>
 			</item>
 		
 			<item>
@@ -62,8 +78,8 @@
 </description>
 				
 				<pubDate>Thu, 10 Oct 2013 00:00:00 +0800</pubDate>
-				<link>/journal/learning-resources.html</link>
-				<guid isPermaLink="true">/journal/learning-resources.html</guid>
+				<link>http://localhost:4000/journal/learning-resources.html</link>
+				<guid isPermaLink="true">http://localhost:4000/journal/learning-resources.html</guid>
 			</item>
 		
 			<item>
@@ -77,8 +93,8 @@
 </description>
 				
 				<pubDate>Thu, 04 Apr 2013 00:00:00 +0800</pubDate>
-				<link>/journal/about-the-author.html</link>
-				<guid isPermaLink="true">/journal/about-the-author.html</guid>
+				<link>http://localhost:4000/journal/about-the-author.html</link>
+				<guid isPermaLink="true">http://localhost:4000/journal/about-the-author.html</guid>
 			</item>
 		
 	</channel>
