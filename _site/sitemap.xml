@@ -21,8 +21,12 @@
 <lastmod>2018-02-28T00:00:00+08:00</lastmod>
 </url>
 <url>
-<loc>http://localhost:4000/shell/zookeeper-tip-1.html</loc>
+<loc>http://localhost:4000/zookeeper/zookeeper-tip.html</loc>
 <lastmod>2018-03-01T00:00:00+08:00</lastmod>
+</url>
+<url>
+<loc>http://localhost:4000/zookeeper/zookeeper-env.html</loc>
+<lastmod>2018-03-05T00:00:00+08:00</lastmod>
 </url>
 <url>
 <loc>http://localhost:4000/menu/about.html</loc>

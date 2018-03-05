@@ -1,0 +1,257 @@
+<!doctype html>
+<html>
+
+<head>
+
+  <title>
+    
+      zookeeper单机&集群部署 | Guu's Neverland
+    
+  </title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/syntax.css">
+  <!-- Use Atom -->
+  <link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Guu's Neverland" />
+  <!-- Use RSS-2.0 -->
+  <!--<link href="/rss-feed.xml" type="application/rss+xml" rel="alternate" title="Guu's Neverland | (๑•́ ∀ •̀๑)"/>
+  //-->
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Code+Pro">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quattrocento+Sans">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <script type="text/javascript" async
+    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+  </script>
+
+  <!-- Google Analytics -->
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-112060364-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <!-- Use Jekyll SEO plugin -->
+
+</head>
+
+
+<body>
+
+  <div class="container">
+    <header class="masthead">
+  <h3 class="masthead-title">
+    <a href="/">Guu's Neverland</a>
+    <small class="masthead-subtitle">(๑•́ ∀ •̀๑)</small>
+    <div class="menu">
+  <nav class="menu-content">
+    
+      <a href="/menu/writing.html">文章列表</a>
+    
+  </nav>
+  <nav class="social-icons">
+    
+  </nav>
+</div>
+
+  </h3>
+</header>
+
+
+    <div class="post-container">
+      <h1>
+  zookeeper单机&集群部署
+</h1>
+
+
+
+<h2 id="单机模式">单机模式：</h2>
+
+<ol>
+  <li>
+    <p>创建安装目录  mkdir -p /home/install</p>
+  </li>
+  <li>
+    <p>进入目录 cd /home/install,下载安装包
+wget http://apache.fayea.com/zookeeper/zookeeper-3.4.10/zookeeper-3.4.10.tar.gz</p>
+  </li>
+  <li>
+    <p>解压 tar -zxvf zookeeper-3.4.10.tar.gz</p>
+  </li>
+  <li>
+    <p>改一下目录名 mv zookeeper-3.4.10 zookeeper</p>
+  </li>
+  <li>
+    <p>进入 zookeeper目录 创建data logs目录</p>
+  </li>
+  <li>进入目录 cd /home/install/zookeeper/conf ,修改zoo.cfg配置信息如下：
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># The number of milliseconds of each tick
+tickTime=2000
+# The number of ticks that the initial
+# synchronization phase can take
+initLimit=10
+# The number of ticks that can pass between
+# sending a request and getting an acknowledgement
+syncLimit=5
+# the directory where the snapshot is stored.
+# do not use /tmp for storage, /tmp here is just
+# example sakes.
+dataDir=/home/install/zookeeper/data
+dataLogDir=/home/install/zookeeper/logs
+# the port at which the clients will connect
+clientPort=3181
+# the maximum number of client connections.
+# increase this if you need to handle more clients
+#maxClientCnxns=60
+#
+# Be sure to read the maintenance section of the
+# administrator guide before turning on autopurge.
+#
+# http://zookeeper.apache.org/doc/current/zookeeperAdmin.html#sc_maintenance
+#
+# The number of snapshots to retain in dataDir
+#autopurge.snapRetainCount=3
+# Purge task interval in hours
+# Set to "0" to disable auto purge feature
+#autopurge.purgeInterval=1
+</code></pre></div>    </div>
+  </li>
+  <li>启动服务  /home/install/zookeeper/bin/zkServer.sh start
+jps检查是否有 QuorumPeerMain 如下，有则启用成功
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@localhost zookeeper]# jps
+4600 QuorumPeerMain
+4622 Jps
+</code></pre></div>    </div>
+  </li>
+  <li>查看日志 /home/install/zookeeper下生成日志 zookeeper.out</li>
+</ol>
+
+<h2 id="集群版">集群版</h2>
+
+<p>使用三台虚拟机如下：
+192.168.87.240 \ 192.168.87.241 \ 192.168.87.242</p>
+
+<ol>
+  <li>
+    <p>首先在每台上执行上面单机模式的流程，确保都能成功启动</p>
+  </li>
+  <li>修改每个节点的zoo.cfg文件，在末尾添加下面三行
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>server.1=192.168.87.240:2887:3887
+server.2=192.168.87.241:2888:3888
+server.3=192.168.87.242:2889:3889
+</code></pre></div>    </div>
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>server.X=A:B:C 
+其中 X-代表服务器编号，例如240就是第一个节点，data目录下新建的myid文件中应该写1
+A-代表ip
+B用于peer间通信使用，例如商定更新的顺序，更具体一些，一个ZooKeeper服务器用这个端口来建立追随者到领导者的连接。当新的领导者出现时，追随者使用此端口打开与领导者的TCP连接。
+由于领导选举也使用TCP连接，所以我们用端口号C进行领导选举。
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>在server.1 虚拟机上的 /home/install/zookeeper/data 目录下创建文件myid
+cd  /home/install/zookeeper/data
+touch myid
+vi myid
+myid内容为1
+相应的 server.2 虚拟机上的myid 为2 , server.3 虚拟机上的myid内容为3</p>
+  </li>
+  <li>重启服务
+cd /home/install/zookeeper/bin
+./zkServer.sh stop
+./zkServer.sh start</li>
+  <li>查看是否成功
+./zkServer.sh status
+成功则现实节点身份如下：
+<img src="/assets/img/20180305zk_status_leader.jpg" alt="alt text" title="zookeeper 角色 leader" />
+<img src="/assets/img/20180305zk_status_follower.jpg" alt="alt text" title="zookeeper 角色 follower" /></li>
+</ol>
+
+
+
+<span class="post-date">
+  Written on
+  
+  March
+  5th,
+  2018
+  by
+  
+    Guu
+  
+</span>
+
+<div class="related">
+  <h1 >您可能还喜欢：</h1>
+  
+  <ul class="related-posts">
+    
+      
+        
+        
+      
+        
+          <li>
+            <h3>
+              <a href="/zookeeper/zookeeper-tip.html">
+                zookeeper_server.pid: 没有那个文件或目录
+                <!--<img src="http://localhost:4000/images/">-->
+                <!--<small>March 1, 2018</small>-->
+              </a>
+            </h3>
+          </li>
+          
+        
+      
+        
+          <li>
+            <h3>
+              <a href="/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/Locust-1.html">
+                Locust简介及其特点
+                <!--<img src="http://localhost:4000/images/">-->
+                <!--<small>February 28, 2018</small>-->
+              </a>
+            </h3>
+          </li>
+          
+        
+      
+    
+      
+        
+        
+      
+        
+        
+      
+        
+        
+      
+    
+  </ul>
+</div>
+
+
+
+
+    </div>
+
+    <footer class="footer">
+  
+  <div class="post-date"><a href="/menu/about.html">Guu's Neverland | (๑•́ ∀ •̀๑) by Guu</a></div>
+</footer>
+
+
+  </div>
+
+</body>
+</html>

@@ -2,15 +2,11 @@
 layout: post
 title: "zookeeper_server.pid: 没有那个文件或目录"
 author: "Guu"
-categories: shell
+categories: zookeeper
 tags: [documentation,sample]
-<<<<<<< HEAD
 image: cityNight.jpg
-=======
-image: cityNight.png
->>>>>>> 91c8bd3bd8879f81c873ab7ae5996b034ae09f52
 ---
-
+s
 今天捣鼓zookeeper，安装完成启动时却出现了一个奇怪的问题，提示“.../zookeeper/data/zookeeper_server.pid: 没有那个文件或目录 FAILED TO WRITE PID”。如下图：
 ![alt text](/assets/img/20180301zk_start_failed.png "zookeeper启动失败截图")
 

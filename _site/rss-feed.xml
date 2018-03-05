@@ -7,19 +7,35 @@
 		<atom:link href="/rss-feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>zookeeper单机&amp;集群部署</title>
+				
+					<dc:creator>Guu</dc:creator>
+				
+				
+					<description>&lt;h2 id=&quot;单机模式&quot;&gt;单机模式：&lt;/h2&gt;
+
+</description>
+				
+				<pubDate>Mon, 05 Mar 2018 00:00:00 +0800</pubDate>
+				<link>http://localhost:4000/zookeeper/zookeeper-env.html</link>
+				<guid isPermaLink="true">http://localhost:4000/zookeeper/zookeeper-env.html</guid>
+			</item>
+		
+			<item>
 				<title>zookeeper_server.pid: 没有那个文件或目录</title>
 				
 					<dc:creator>Guu</dc:creator>
 				
 				
-					<description>&lt;p&gt;今天捣鼓zookeeper，安装完成启动时却出现了一个奇怪的问题，提示“…/zookeeper/data/zookeeper_server.pid: 没有那个文件或目录 FAILED TO WRITE PID”。如下图：
+					<description>&lt;p&gt;s
+今天捣鼓zookeeper，安装完成启动时却出现了一个奇怪的问题，提示“…/zookeeper/data/zookeeper_server.pid: 没有那个文件或目录 FAILED TO WRITE PID”。如下图：
 &lt;img src=&quot;/assets/img/20180301zk_start_failed.png&quot; alt=&quot;alt text&quot; title=&quot;zookeeper启动失败截图&quot; /&gt;&lt;/p&gt;
 
 </description>
 				
 				<pubDate>Thu, 01 Mar 2018 00:00:00 +0800</pubDate>
-				<link>http://localhost:4000/shell/zookeeper-tip-1.html</link>
-				<guid isPermaLink="true">http://localhost:4000/shell/zookeeper-tip-1.html</guid>
+				<link>http://localhost:4000/zookeeper/zookeeper-tip.html</link>
+				<guid isPermaLink="true">http://localhost:4000/zookeeper/zookeeper-tip.html</guid>
 			</item>
 		
 			<item>
