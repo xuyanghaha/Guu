@@ -1,0 +1,240 @@
+<!doctype html>
+<html>
+
+<head>
+
+  <title>
+    
+      redis-trib构建redis集群 | Guu's Neverland
+    
+  </title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/syntax.css">
+  <!-- Use Atom -->
+  <link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Guu's Neverland" />
+  <!-- Use RSS-2.0 -->
+  <!--<link href="/rss-feed.xml" type="application/rss+xml" rel="alternate" title="Guu's Neverland | (๑•́ ∀ •̀๑)"/>
+  //-->
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Code+Pro">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quattrocento+Sans">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <script type="text/javascript" async
+    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+  </script>
+
+  <!-- Google Analytics -->
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-112060364-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <!-- Use Jekyll SEO plugin -->
+
+</head>
+
+
+<body>
+
+  <div class="container">
+    <header class="masthead">
+  <h3 class="masthead-title">
+    <a href="/">Guu's Neverland</a>
+    <small class="masthead-subtitle">(๑•́ ∀ •̀๑)</small>
+    <div class="menu">
+  <nav class="menu-content">
+    
+      <a href="/menu/writing.html">文章列表</a>
+    
+  </nav>
+  <nav class="social-icons">
+    
+  </nav>
+</div>
+
+  </h3>
+</header>
+
+
+    <div class="post-container">
+      <h1>
+  redis-trib构建redis集群
+</h1>
+
+
+  <img src="/assets/img/spools.jpg">
+
+
+<h2 id="1-准备工作">1. 准备工作</h2>
+<p>在安装redis集群前，首先要做一些准备工作，因为redis-trib工具是redis官方提供的集群构建工具，这个工具是用ruby实现的，所以要先安装ruby</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yum <span class="nt">-y</span> install ruby ruby-devel rubygems rpm-build   <span class="c">#安装ruby、gem</span>
+gem update <span class="nt">--system</span>   <span class="c">#更新gem   </span>
+gem install redis <span class="nt">-v</span> 3.3.5 <span class="c">#安装redis扩展</span>
+</code></pre></div></div>
+<p>如果安装失败，执行如下两句命令修改源再试一次</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gem sources <span class="nt">--remove</span> https://rubygems.org/
+gem sources <span class="nt">-a</span> https://ruby.taobao.org/
+</code></pre></div></div>
+<p>安装完成后检查一下是否安装成功</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ruby <span class="nt">-v</span>
+gem list <span class="c">#查看是否已安装redis扩展</span>
+</code></pre></div></div>
+
+<h2 id="2-安装redis集群">2. 安装redis集群</h2>
+<ol>
+  <li>下载编译
+    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> /home/install
+wget http://download.redis.io/releases/redis-3.2.8.tar.gz <span class="c">#下载</span>
+<span class="nb">tar</span> <span class="nt">-zxvf</span> redis-3.2.8.tar.gz   <span class="c">#解压</span>
+<span class="nb">cd </span>redis-3.2.8    <span class="c">#切换目录</span>
+make <span class="o">&amp;&amp;</span> make install  <span class="c">#编译安装（需要安装gcc 通过命令 yum install -y gcc g++ gcc-c++ make)</span>
+</code></pre></div>    </div>
+  </li>
+  <li>创建cluster目录，这里以端口号命名，从7000-7005创建6个目录
+    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir <span class="nt">-p</span> /home/install/redis-3.2.8/cluster
+<span class="nb">cd</span> /home/install/redis-3.2.8/cluster
+mkdir 7000
+mkdir 7001
+mkdir 7002
+mkdir 7003
+mkdir 7004
+mkdir 7005
+</code></pre></div>    </div>
+  </li>
+  <li>在每个目录下增加修改配置文件redis.conf
+ 例如7000的目录，复制一份redis.conf
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd 7000
+cp /home/install/redis-3.2.8/redis.conf ./
+</code></pre></div>    </div>
+    <p>对其配置进行修改如下内容：</p>
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> port 7000 （与目录名一致）
+ daemonize yes
+ cluster-enabled yes
+ cluster-config-file nodes.conf
+ cluster-node-timeout 5000
+ pidfile /var/run/redis.pid
+</code></pre></div>    </div>
+  </li>
+  <li>启动六个实例
+举例第一个实例端口号为7000
+    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> /home/install/redis-3.2.8/cluster/7000
+../../src/redis-server  ./redis.conf
+</code></pre></div>    </div>
+    <p>启动第二个 7001</p>
+    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> /home/install/redis-3.2.8/cluster/7001
+../../src/redis-server  ./redis.conf
+</code></pre></div>    </div>
+    <p>全部启用后，检查是否启用成功
+ps -ef | grep redis
+出现下图说明OK：
+<img src="/assets/img/20180306redis_cluster_start.jpg" alt="alt text" title="redis启用成功" /></p>
+  </li>
+  <li>构建集群
+    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> /home/install/redis-3.2.8/
+./src/redis-trib.rb create <span class="nt">--replicas</span> 1 127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005
+</code></pre></div>    </div>
+    <p><img src="/assets/img/20180306redis_cluster_slot.jpg" alt="alt text" title="redis集群构建成功" /></p>
+  </li>
+  <li>集群验证
+    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./src/redis-cli <span class="nt">-h127</span>.0.0.1 <span class="nt">-c</span> <span class="nt">-p</span> 7003      加参数 <span class="nt">-C</span> 可连接到集群
+</code></pre></div>    </div>
+    <p>set hello world     可成功写入一个key “hello”  value 为 “world”
+登到另一个实例上</p>
+    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./src/redis-cli <span class="nt">-h</span> 127.0.0.1 <span class="nt">-c</span> <span class="nt">-p</span> 7001
+</code></pre></div>    </div>
+    <p>get hello         ,可成功读取值world 且指向7003
+说明集群创建成功</p>
+  </li>
+</ol>
+
+
+
+<span class="post-date">
+  Written on
+  
+  March
+  6th,
+  2018
+  by
+  
+    Guu
+  
+</span>
+
+<div class="related">
+  <h1 >您可能还喜欢：</h1>
+  
+  <ul class="related-posts">
+    
+      
+        
+        
+      
+        
+          <li>
+            <h3>
+              <a href="/zookeeper/zookeeper-env.html">
+                zookeeper单机&集群部署
+                <!--<img src="http://localhost:4000/images/">-->
+                <!--<small>March 5, 2018</small>-->
+              </a>
+            </h3>
+          </li>
+          
+        
+      
+        
+          <li>
+            <h3>
+              <a href="/zookeeper/zookeeper-tip.html">
+                zookeeper_server.pid: 没有那个文件或目录
+                <!--<img src="http://localhost:4000/images/">-->
+                <!--<small>March 1, 2018</small>-->
+              </a>
+            </h3>
+          </li>
+          
+        
+      
+    
+      
+        
+        
+      
+        
+        
+      
+        
+        
+      
+    
+  </ul>
+</div>
+
+
+
+
+    </div>
+
+    <footer class="footer">
+  
+  <div class="post-date"><a href="/menu/about.html">Guu's Neverland | (๑•́ ∀ •̀๑) by Guu</a></div>
+</footer>
+
+
+  </div>
+
+</body>
+</html>

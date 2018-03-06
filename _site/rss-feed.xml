@@ -7,6 +7,34 @@
 		<atom:link href="/rss-feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>redis-trib构建redis集群</title>
+				
+					<dc:creator>Guu</dc:creator>
+				
+				
+					<description>&lt;h2 id=&quot;1-准备工作&quot;&gt;1. 准备工作&lt;/h2&gt;
+&lt;p&gt;在安装redis集群前，首先要做一些准备工作，因为redis-trib工具是redis官方提供的集群构建工具，这个工具是用ruby实现的，所以要先安装ruby&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; install ruby ruby-devel rubygems rpm-build   &lt;span class=&quot;c&quot;&gt;#安装ruby、gem&lt;/span&gt;
+gem update &lt;span class=&quot;nt&quot;&gt;--system&lt;/span&gt;   &lt;span class=&quot;c&quot;&gt;#更新gem   &lt;/span&gt;
+gem install redis &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; 3.3.5 &lt;span class=&quot;c&quot;&gt;#安装redis扩展&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;如果安装失败，执行如下两句命令修改源再试一次&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gem sources &lt;span class=&quot;nt&quot;&gt;--remove&lt;/span&gt; https://rubygems.org/
+gem sources &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; https://ruby.taobao.org/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;安装完成后检查一下是否安装成功&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ruby &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt;
+gem list &lt;span class=&quot;c&quot;&gt;#查看是否已安装redis扩展&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+</description>
+				
+				<pubDate>Tue, 06 Mar 2018 00:00:00 +0800</pubDate>
+				<link>http://localhost:4000/redis/redis-cluster.html</link>
+				<guid isPermaLink="true">http://localhost:4000/redis/redis-cluster.html</guid>
+			</item>
+		
+			<item>
 				<title>zookeeper单机&amp;集群部署</title>
 				
 					<dc:creator>Guu</dc:creator>

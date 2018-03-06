@@ -1,4 +1,84 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2018-03-05T21:02:28+08:00</updated><id>http://localhost:4000/</id><title type="html">Guu’s Neverland</title><subtitle>(๑•́ ∀ •̀๑)</subtitle><author><name>Guu</name></author><entry><title type="html">zookeeper单机&amp;amp;集群部署</title><link href="http://localhost:4000/zookeeper/zookeeper-env.html" rel="alternate" type="text/html" title="zookeeper单机&amp;集群部署" /><published>2018-03-05T00:00:00+08:00</published><updated>2018-03-05T00:00:00+08:00</updated><id>http://localhost:4000/zookeeper/zookeeper-env</id><content type="html" xml:base="http://localhost:4000/zookeeper/zookeeper-env.html">&lt;h2 id=&quot;单机模式&quot;&gt;单机模式：&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2018-03-06T17:54:25+08:00</updated><id>http://localhost:4000/</id><title type="html">Guu’s Neverland</title><subtitle>(๑•́ ∀ •̀๑)</subtitle><author><name>Guu</name></author><entry><title type="html">redis-trib构建redis集群</title><link href="http://localhost:4000/redis/redis-cluster.html" rel="alternate" type="text/html" title="redis-trib构建redis集群" /><published>2018-03-06T00:00:00+08:00</published><updated>2018-03-06T00:00:00+08:00</updated><id>http://localhost:4000/redis/redis-cluster</id><content type="html" xml:base="http://localhost:4000/redis/redis-cluster.html">&lt;h2 id=&quot;1-准备工作&quot;&gt;1. 准备工作&lt;/h2&gt;
+&lt;p&gt;在安装redis集群前，首先要做一些准备工作，因为redis-trib工具是redis官方提供的集群构建工具，这个工具是用ruby实现的，所以要先安装ruby&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; install ruby ruby-devel rubygems rpm-build   &lt;span class=&quot;c&quot;&gt;#安装ruby、gem&lt;/span&gt;
+gem update &lt;span class=&quot;nt&quot;&gt;--system&lt;/span&gt;   &lt;span class=&quot;c&quot;&gt;#更新gem   &lt;/span&gt;
+gem install redis &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; 3.3.5 &lt;span class=&quot;c&quot;&gt;#安装redis扩展&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;如果安装失败，执行如下两句命令修改源再试一次&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gem sources &lt;span class=&quot;nt&quot;&gt;--remove&lt;/span&gt; https://rubygems.org/
+gem sources &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; https://ruby.taobao.org/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;安装完成后检查一下是否安装成功&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ruby &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt;
+gem list &lt;span class=&quot;c&quot;&gt;#查看是否已安装redis扩展&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;2-安装redis集群&quot;&gt;2. 安装redis集群&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;下载编译
+    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /home/install
+wget http://download.redis.io/releases/redis-3.2.8.tar.gz &lt;span class=&quot;c&quot;&gt;#下载&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;tar&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-zxvf&lt;/span&gt; redis-3.2.8.tar.gz   &lt;span class=&quot;c&quot;&gt;#解压&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;redis-3.2.8    &lt;span class=&quot;c&quot;&gt;#切换目录&lt;/span&gt;
+make &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; make install  &lt;span class=&quot;c&quot;&gt;#编译安装（需要安装gcc 通过命令 yum install -y gcc g++ gcc-c++ make)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;创建cluster目录，这里以端口号命名，从7000-7005创建6个目录
+    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mkdir &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; /home/install/redis-3.2.8/cluster
+&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /home/install/redis-3.2.8/cluster
+mkdir 7000
+mkdir 7001
+mkdir 7002
+mkdir 7003
+mkdir 7004
+mkdir 7005
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;在每个目录下增加修改配置文件redis.conf
+ 例如7000的目录，复制一份redis.conf
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cd 7000
+cp /home/install/redis-3.2.8/redis.conf ./
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+    &lt;p&gt;对其配置进行修改如下内容：&lt;/p&gt;
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; port 7000 （与目录名一致）
+ daemonize yes
+ cluster-enabled yes
+ cluster-config-file nodes.conf
+ cluster-node-timeout 5000
+ pidfile /var/run/redis.pid
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;启动六个实例
+举例第一个实例端口号为7000
+    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /home/install/redis-3.2.8/cluster/7000
+../../src/redis-server  ./redis.conf
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+    &lt;p&gt;启动第二个 7001&lt;/p&gt;
+    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /home/install/redis-3.2.8/cluster/7001
+../../src/redis-server  ./redis.conf
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+    &lt;p&gt;全部启用后，检查是否启用成功
+ps -ef | grep redis
+出现下图说明OK：
+&lt;img src=&quot;/assets/img/20180306redis_cluster_start.jpg&quot; alt=&quot;alt text&quot; title=&quot;redis启用成功&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;构建集群
+    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /home/install/redis-3.2.8/
+./src/redis-trib.rb create &lt;span class=&quot;nt&quot;&gt;--replicas&lt;/span&gt; 1 127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+    &lt;p&gt;&lt;img src=&quot;/assets/img/20180306redis_cluster_slot.jpg&quot; alt=&quot;alt text&quot; title=&quot;redis集群构建成功&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;集群验证
+    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./src/redis-cli &lt;span class=&quot;nt&quot;&gt;-h127&lt;/span&gt;.0.0.1 &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 7003      加参数 &lt;span class=&quot;nt&quot;&gt;-C&lt;/span&gt; 可连接到集群
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+    &lt;p&gt;set hello world     可成功写入一个key “hello”  value 为 “world”
+登到另一个实例上&lt;/p&gt;
+    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./src/redis-cli &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt; 127.0.0.1 &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 7001
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+    &lt;p&gt;get hello         ,可成功读取值world 且指向7003
+说明集群创建成功&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;</content><author><name>Guu</name></author><category term="documentation" /><category term="sample" /><summary type="html">1. 准备工作 在安装redis集群前，首先要做一些准备工作，因为redis-trib工具是redis官方提供的集群构建工具，这个工具是用ruby实现的，所以要先安装ruby yum -y install ruby ruby-devel rubygems rpm-build #安装ruby、gem gem update --system #更新gem gem install redis -v 3.3.5 #安装redis扩展 如果安装失败，执行如下两句命令修改源再试一次 gem sources --remove https://rubygems.org/ gem sources -a https://ruby.taobao.org/ 安装完成后检查一下是否安装成功 ruby -v gem list #查看是否已安装redis扩展</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/spools.jpg" /></entry><entry><title type="html">zookeeper单机&amp;amp;集群部署</title><link href="http://localhost:4000/zookeeper/zookeeper-env.html" rel="alternate" type="text/html" title="zookeeper单机&amp;集群部署" /><published>2018-03-05T00:00:00+08:00</published><updated>2018-03-05T00:00:00+08:00</updated><id>http://localhost:4000/zookeeper/zookeeper-env</id><content type="html" xml:base="http://localhost:4000/zookeeper/zookeeper-env.html">&lt;h2 id=&quot;单机模式&quot;&gt;单机模式：&lt;/h2&gt;
 
 &lt;ol&gt;
   &lt;li&gt;
@@ -97,7 +177,7 @@ cd /home/install/zookeeper/bin
 成功则现实节点身份如下：
 &lt;img src=&quot;/assets/img/20180305zk_status_leader.jpg&quot; alt=&quot;alt text&quot; title=&quot;zookeeper 角色 leader&quot; /&gt;
 &lt;img src=&quot;/assets/img/20180305zk_status_follower.jpg&quot; alt=&quot;alt text&quot; title=&quot;zookeeper 角色 follower&quot; /&gt;&lt;/li&gt;
-&lt;/ol&gt;</content><author><name>Guu</name></author><category term="documentation" /><category term="sample" /><summary type="html">单机模式：</summary></entry><entry><title type="html">zookeeper_server.pid: 没有那个文件或目录</title><link href="http://localhost:4000/zookeeper/zookeeper-tip.html" rel="alternate" type="text/html" title="zookeeper_server.pid: 没有那个文件或目录" /><published>2018-03-01T00:00:00+08:00</published><updated>2018-03-01T00:00:00+08:00</updated><id>http://localhost:4000/zookeeper/zookeeper-tip</id><content type="html" xml:base="http://localhost:4000/zookeeper/zookeeper-tip.html">&lt;p&gt;s
+&lt;/ol&gt;</content><author><name>Guu</name></author><category term="documentation" /><category term="sample" /><summary type="html">单机模式：</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/cutting.jpg" /></entry><entry><title type="html">zookeeper_server.pid: 没有那个文件或目录</title><link href="http://localhost:4000/zookeeper/zookeeper-tip.html" rel="alternate" type="text/html" title="zookeeper_server.pid: 没有那个文件或目录" /><published>2018-03-01T00:00:00+08:00</published><updated>2018-03-01T00:00:00+08:00</updated><id>http://localhost:4000/zookeeper/zookeeper-tip</id><content type="html" xml:base="http://localhost:4000/zookeeper/zookeeper-tip.html">&lt;p&gt;s
 今天捣鼓zookeeper，安装完成启动时却出现了一个奇怪的问题，提示“…/zookeeper/data/zookeeper_server.pid: 没有那个文件或目录 FAILED TO WRITE PID”。如下图：
 &lt;img src=&quot;/assets/img/20180301zk_start_failed.png&quot; alt=&quot;alt text&quot; title=&quot;zookeeper启动失败截图&quot; /&gt;&lt;/p&gt;
 

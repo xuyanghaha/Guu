@@ -4,7 +4,7 @@ title: "zookeeper单机&集群部署"
 author: "Guu"
 categories: zookeeper
 tags: [documentation,sample]
-image: 
+image: cutting.jpg
 ---
 
 ## 单机模式：
