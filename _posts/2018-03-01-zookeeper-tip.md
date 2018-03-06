@@ -8,7 +8,7 @@ image: cityNight.jpg
 ---
 s
 今天捣鼓zookeeper，安装完成启动时却出现了一个奇怪的问题，提示“.../zookeeper/data/zookeeper_server.pid: 没有那个文件或目录 FAILED TO WRITE PID”。如下图：
-![alt text](/assets/img/20180301zk_start_failed.png "zookeeper启动失败截图")
+![alt text](img/20180301zk_start_failed.png)
 
 既然提示了103行报错，那索性到zkServe中找找原因吧
 ```shell
