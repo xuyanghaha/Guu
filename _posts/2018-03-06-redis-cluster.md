@@ -88,12 +88,16 @@ cd /home/install/redis-3.2.8/
 ```shell
 ./src/redis-cli -h127.0.0.1 -c -p 7003      加参数 -C 可连接到集群
 ```
-set hello world     可成功写入一个key "hello"  value 为 “world”
+set hello world
+
+可成功写入一个key "hello"  value 为 “world”
+
 登到另一个实例上
 ```shell
 ./src/redis-cli -h 127.0.0.1 -c -p 7001
 ```
-get hello         ,可成功读取值world 且指向7003
+get hello   ,可成功读取值world 且指向7003
+
 说明集群创建成功
 
 

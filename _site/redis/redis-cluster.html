@@ -150,14 +150,18 @@ ps -ef | grep redis
   <li>集群验证
     <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./src/redis-cli <span class="nt">-h127</span>.0.0.1 <span class="nt">-c</span> <span class="nt">-p</span> 7003      加参数 <span class="nt">-C</span> 可连接到集群
 </code></pre></div>    </div>
-    <p>set hello world     可成功写入一个key “hello”  value 为 “world”
-登到另一个实例上</p>
-    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./src/redis-cli <span class="nt">-h</span> 127.0.0.1 <span class="nt">-c</span> <span class="nt">-p</span> 7001
-</code></pre></div>    </div>
-    <p>get hello         ,可成功读取值world 且指向7003
-说明集群创建成功</p>
+    <p>set hello world</p>
   </li>
 </ol>
+
+<p>可成功写入一个key “hello”  value 为 “world”</p>
+
+<p>登到另一个实例上</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./src/redis-cli <span class="nt">-h</span> 127.0.0.1 <span class="nt">-c</span> <span class="nt">-p</span> 7001
+</code></pre></div></div>
+<p>get hello   ,可成功读取值world 且指向7003</p>
+
+<p>说明集群创建成功</p>
 
 
 
