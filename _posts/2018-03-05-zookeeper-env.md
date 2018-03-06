@@ -99,6 +99,6 @@ cd /home/install/zookeeper/bin
 5. 查看是否成功
 ./zkServer.sh status
 成功则现实节点身份如下：
-![alt text](/assets/img/20180305zk_status_leader.jpg "zookeeper 角色 leader")
-![alt text](/assets/img/20180305zk_status_follower.jpg "zookeeper 角色 follower")
+![alt text]({{ site.github.url }}/assets/img/20180305zk_status_leader.jpg "zookeeper 角色 leader")
+![alt text]({{ site.github.url }}/assets/img/20180305zk_status_follower.jpg "zookeeper 角色 follower")
 

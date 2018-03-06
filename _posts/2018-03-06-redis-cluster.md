@@ -77,13 +77,13 @@ cd /home/install/redis-3.2.8/cluster/7001
 全部启用后，检查是否启用成功
 ps -ef \| grep redis
 出现下图说明OK：
-![alt text](/assets/img/20180306redis_cluster_start.jpg "redis启用成功")
+![alt text]({{ site.github.url }}/assets/img/20180306redis_cluster_start.jpg "redis启用成功")
 5. 构建集群
 ```shell
 cd /home/install/redis-3.2.8/
 ./src/redis-trib.rb create --replicas 1 127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005
 ```
-![alt text](/assets/img/20180306redis_cluster_slot.jpg "redis集群构建成功")
+![alt text]({{ site.github.url }}/assets/img/20180306redis_cluster_slot.jpg "redis集群构建成功")
 6. 集群验证
 ```shell
 ./src/redis-cli -h127.0.0.1 -c -p 7003      加参数 -C 可连接到集群
