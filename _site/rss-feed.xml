@@ -7,6 +7,21 @@
 		<atom:link href="/rss-feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>shell的交互式和非交互式,登陆和非登陆</title>
+				
+					<dc:creator>Guu</dc:creator>
+				
+				
+					<description>&lt;p&gt; 上次安装zookeeper启动服务失败时遇到了shell的变量配置文件加载顺序的问题，从而引出了登陆式和非登陆式shell、交互式和非交互式shell，今天对照着bash官方文档把相关概念整理一下。&lt;/p&gt;
+
+</description>
+				
+				<pubDate>Wed, 07 Mar 2018 00:00:00 +0800</pubDate>
+				<link>http://localhost:4000/shell/shell-login.html</link>
+				<guid isPermaLink="true">http://localhost:4000/shell/shell-login.html</guid>
+			</item>
+		
+			<item>
 				<title>redis-trib构建redis集群</title>
 				
 					<dc:creator>Guu</dc:creator>
@@ -14,16 +29,16 @@
 				
 					<description>&lt;h2 id=&quot;1-准备工作&quot;&gt;1. 准备工作&lt;/h2&gt;
 &lt;p&gt;在安装redis集群前，首先要做一些准备工作，因为redis-trib工具是redis官方提供的集群构建工具，这个工具是用ruby实现的，所以要先安装ruby&lt;/p&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; install ruby ruby-devel rubygems rpm-build   &lt;span class=&quot;c&quot;&gt;#安装ruby、gem&lt;/span&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; install ruby ruby-devel rubygems rpm-build   &lt;span class=&quot;c&quot;&gt;#安装ruby、gem&lt;/span&gt;
 gem update &lt;span class=&quot;nt&quot;&gt;--system&lt;/span&gt;   &lt;span class=&quot;c&quot;&gt;#更新gem   &lt;/span&gt;
 gem install redis &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; 3.3.5 &lt;span class=&quot;c&quot;&gt;#安装redis扩展&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;如果安装失败，执行如下两句命令修改源再试一次&lt;/p&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gem sources &lt;span class=&quot;nt&quot;&gt;--remove&lt;/span&gt; https://rubygems.org/
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gem sources &lt;span class=&quot;nt&quot;&gt;--remove&lt;/span&gt; https://rubygems.org/
 gem sources &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; https://ruby.taobao.org/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;安装完成后检查一下是否安装成功&lt;/p&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ruby &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ruby &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt;
 gem list &lt;span class=&quot;c&quot;&gt;#查看是否已安装redis扩展&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
@@ -55,8 +70,7 @@ gem list &lt;span class=&quot;c&quot;&gt;#查看是否已安装redis扩展&lt;/s
 					<dc:creator>Guu</dc:creator>
 				
 				
-					<description>&lt;p&gt;s
-今天捣鼓zookeeper，安装完成启动时却出现了一个奇怪的问题，提示“…/zookeeper/data/zookeeper_server.pid: 没有那个文件或目录 FAILED TO WRITE PID”。如下图：
+					<description>&lt;p&gt;今天捣鼓zookeeper，安装完成启动时却出现了一个奇怪的问题，提示“…/zookeeper/data/zookeeper_server.pid: 没有那个文件或目录 FAILED TO WRITE PID”。如下图：
 &lt;img src=&quot;/assets/img/20180301zk_start_failed.png&quot; alt=&quot;alt text&quot; title=&quot;zk启用失败截图&quot; /&gt;&lt;/p&gt;
 
 </description>
@@ -109,36 +123,6 @@ gem list &lt;span class=&quot;c&quot;&gt;#查看是否已安装redis扩展&lt;/s
 				<pubDate>Wed, 01 Jan 2014 00:00:00 +0800</pubDate>
 				<link>http://localhost:4000/journal/text-formatting-examples.html</link>
 				<guid isPermaLink="true">http://localhost:4000/journal/text-formatting-examples.html</guid>
-			</item>
-		
-			<item>
-				<title>Learning Resources</title>
-				
-					<dc:creator>Paul Le</dc:creator>
-				
-				
-					<description>&lt;p&gt;The beauty of computer programming is that you do not need to formally go to school to learn how to program. You can learn almost everything that you would need to know online, and for free. The following resources are some that I have used personally, that I highly recommend, for anyone looking to learn more about computer programming.&lt;/p&gt;
-
-</description>
-				
-				<pubDate>Thu, 10 Oct 2013 00:00:00 +0800</pubDate>
-				<link>http://localhost:4000/journal/learning-resources.html</link>
-				<guid isPermaLink="true">http://localhost:4000/journal/learning-resources.html</guid>
-			</item>
-		
-			<item>
-				<title>About the Author</title>
-				
-					<dc:creator>Paul Le</dc:creator>
-				
-				
-					<description>&lt;p&gt;Hi there! I’m Paul. I’m a physics major turned programmer. Ever since I first learned how to program while taking a scientific computing for physics course, I have pursued programming as a passion, and as a career. Below is a compilation of some of my favourite things that I have built over the years. You may find everything else on my &lt;a href=&quot;http://github.com/lenpaul&quot; target=&quot;_blank&quot;&gt;Github&lt;/a&gt; and &lt;a href=&quot;https://codepen.io/lenpaul&quot; target=&quot;_blank&quot;&gt;Code Pen&lt;/a&gt; profiles.&lt;/p&gt;
-
-</description>
-				
-				<pubDate>Thu, 04 Apr 2013 00:00:00 +0800</pubDate>
-				<link>http://localhost:4000/journal/about-the-author.html</link>
-				<guid isPermaLink="true">http://localhost:4000/journal/about-the-author.html</guid>
 			</item>
 		
 	</channel>

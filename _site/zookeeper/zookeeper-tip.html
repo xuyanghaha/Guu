@@ -77,12 +77,11 @@
   <img src="/assets/img/cityNight.jpg">
 
 
-<p>s
-今天捣鼓zookeeper，安装完成启动时却出现了一个奇怪的问题，提示“…/zookeeper/data/zookeeper_server.pid: 没有那个文件或目录 FAILED TO WRITE PID”。如下图：
+<p>今天捣鼓zookeeper，安装完成启动时却出现了一个奇怪的问题，提示“…/zookeeper/data/zookeeper_server.pid: 没有那个文件或目录 FAILED TO WRITE PID”。如下图：
 <img src="/assets/img/20180301zk_start_failed.png" alt="alt text" title="zk启用失败截图" /></p>
 
 <p>既然提示了103行报错，那索性到zkServe中找找原因吧</p>
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>start<span class="o">)</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>start<span class="o">)</span>
     <span class="nb">echo</span>  <span class="nt">-n</span> <span class="s2">"Starting zookeeper ... "</span>
     <span class="k">if</span> <span class="o">[</span> <span class="nt">-f</span> <span class="nv">$ZOOPIDFILE</span> <span class="o">]</span><span class="p">;</span> <span class="k">then
       if </span><span class="nb">kill</span> <span class="nt">-0</span> <span class="sb">`</span><span class="nb">cat</span> <span class="nv">$ZOOPIDFILE</span><span class="sb">`</span> <span class="o">&gt;</span> /dev/null 2&gt;&amp;1<span class="p">;</span> <span class="k">then
@@ -139,6 +138,19 @@
         
           <li>
             <h3>
+              <a href="/shell/shell-login.html">
+                shell的交互式和非交互式,登陆和非登陆
+                <!--<img src="http://localhost:4000/images/">-->
+                <!--<small>March 7, 2018</small>-->
+              </a>
+            </h3>
+          </li>
+          
+        
+      
+        
+          <li>
+            <h3>
               <a href="/redis/redis-cluster.html">
                 redis-trib构建redis集群
                 <!--<img src="http://localhost:4000/images/">-->
@@ -160,9 +172,6 @@
             </h3>
           </li>
           
-        
-      
-        
         
       
     

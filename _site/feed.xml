@@ -1,22 +1,98 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2018-03-06T18:33:44+08:00</updated><id>http://localhost:4000/</id><title type="html">Guu’s Neverland</title><subtitle>(๑•́ ∀ •̀๑)</subtitle><author><name>Guu</name></author><entry><title type="html">redis-trib构建redis集群</title><link href="http://localhost:4000/redis/redis-cluster.html" rel="alternate" type="text/html" title="redis-trib构建redis集群" /><published>2018-03-06T00:00:00+08:00</published><updated>2018-03-06T00:00:00+08:00</updated><id>http://localhost:4000/redis/redis-cluster</id><content type="html" xml:base="http://localhost:4000/redis/redis-cluster.html">&lt;h2 id=&quot;1-准备工作&quot;&gt;1. 准备工作&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2018-03-07T20:15:47+08:00</updated><id>http://localhost:4000/</id><title type="html">Guu’s Neverland</title><subtitle>(๑•́ ∀ •̀๑)</subtitle><author><name>Guu</name></author><entry><title type="html">shell的交互式和非交互式,登陆和非登陆</title><link href="http://localhost:4000/shell/shell-login.html" rel="alternate" type="text/html" title="shell的交互式和非交互式,登陆和非登陆" /><published>2018-03-07T00:00:00+08:00</published><updated>2018-03-07T00:00:00+08:00</updated><id>http://localhost:4000/shell/shell-login</id><content type="html" xml:base="http://localhost:4000/shell/shell-login.html">&lt;p&gt; 上次安装zookeeper启动服务失败时遇到了shell的变量配置文件加载顺序的问题，从而引出了登陆式和非登陆式shell、交互式和非交互式shell，今天对照着bash官方文档把相关概念整理一下。&lt;/p&gt;
+
+&lt;h2 id=&quot;登陆shell和非登陆shell&quot;&gt;登陆shell和非登陆shell&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;登陆shell&lt;/strong&gt;：有关登陆shell官网给出了这样的定义：&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;A login shell is one whose first character of argument zero is ‘-’, or one invoked with the –login option.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;登陆shell指的是启用时传递的第0个参数为’-‘开头的shell，或者使用’–login’参数启用的shell。&lt;/p&gt;
+
+&lt;p&gt; 简单点解释，有两种情况可以称之为登陆shell，第一种是shell的第0个参数，也就是当前shell的名字以’-‘开头，例如：&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@localhost ~]# &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$0&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;-bash&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 或者也可这样查询，$$代表当前进程号&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@localhost ~]# ps | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$$&lt;/span&gt;
+65211 ttys000    0:00.03 &lt;span class=&quot;nt&quot;&gt;-bash&lt;/span&gt;      &lt;span class=&quot;c&quot;&gt;#这里进程名以‘-’开头&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;第二种情况是启用shell时使用了’–login’参数：&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ps |grep &lt;span class=&quot;nv&quot;&gt;$$&lt;/span&gt;
+11101 pts/1    00:00:00 bash  &lt;span class=&quot;c&quot;&gt;#当前bash进程为11101&lt;/span&gt;
+
+bash &lt;span class=&quot;nt&quot;&gt;--login&lt;/span&gt;       &lt;span class=&quot;c&quot;&gt;#启用一个bash 使用'--login'参数&lt;/span&gt;
+ps                 &lt;span class=&quot;c&quot;&gt;#查看所有进程&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--------------------------------&lt;/span&gt;
+PID TTY          TIME CMD
+11101 pts/1    00:00:00 bash
+11117 pts/1    00:00:00 bash   &lt;span class=&quot;c&quot;&gt;#显示增加了一个bash进程，这就是一个登陆shell&lt;/span&gt;
+11130 pts/1    00:00:00 ps
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;非登陆shell：&lt;/strong&gt;如果直接用bash启用一个shell，这就是非登陆shell了。&lt;/p&gt;
+
+&lt;p&gt; 还有一个办法能看出当前shell是登陆还是非登陆，那就是exit命令和logout命令.&lt;br /&gt;
+&lt;strong&gt;exit&lt;/strong&gt; 可以退出登陆和非登陆两种shell，如果退出了登陆shell 会返回logout，如果是非登陆会返回exit.&lt;br /&gt;
+&lt;strong&gt;logout&lt;/strong&gt; 只能退出登陆shell ,如果用logout退出非登陆shell 会提示如下：&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;bash: &lt;span class=&quot;nb&quot;&gt;logout&lt;/span&gt;: not login shell: use &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;打开一个终端或者通过ssh远程登陆，通常我们使用的都是非登陆的shell，那么登陆和非登陆有什么区别呢,主要是加载环境变量配置文件的不同，我们后面再讲。&lt;/p&gt;
+
+&lt;h2 id=&quot;交互式和非交互式&quot;&gt;交互式和非交互式&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;交互式shell：&lt;/strong&gt;就是在终端上执行，shell等待你的输入，并且立即执行你提交的命令。这种模式被称作交互式是因为shell与用户进行交互。这种模式也是大多数用户非常熟悉的：登录、执行一些命令、退出。当你退出后，shell也终止了。&lt;br /&gt;
+&lt;strong&gt;非交互式shell：&lt;/strong&gt;运行bash script，执行脚本中的命令 ，读到文件末尾结束EOF，这就是非交互式shell。&lt;/p&gt;
+
+&lt;p&gt;怎么判断是否是交互式呢，查看 $- ，它代表着当前shell的选项标志。查看返回的字符串中是否有字母i ,有则说明是交互式shell&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@localhost ~]# &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$-&lt;/span&gt;
+himBH              &lt;span class=&quot;c&quot;&gt;#返回有i 为交互式&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;不同模式配置文件读取的不同&quot;&gt;不同模式配置文件读取的不同&lt;/h2&gt;
+&lt;p&gt; 首先说明一下，其实登陆非登陆、交互式非交互式不过是从两个不同的角度看shell，这两个属性是没有冲突的，可以有登陆交互式shell，可以有登陆非交互式shell各种情况。下面来了解一下不同情况下对应的配置文件读取规则：&lt;/p&gt;
+
+&lt;h3 id=&quot;1交互式登陆shell&quot;&gt;1、交互式登陆shell&lt;/h3&gt;
+&lt;p&gt;启用时按照如下顺序读取执行配置文件，前提是文件存在且可读：&lt;br /&gt;
+/etc/profile&lt;br /&gt;
+～/.bash_profile&lt;br /&gt;
+~/.bash_login&lt;br /&gt;
+～/.profile&lt;br /&gt;
+除非当前shell在启用时使用了—noprofile选项，如果用了这个选项，则shell不会加载以上所有配置文件。&lt;br /&gt;
+另外，交互式登陆shell或者非交互式登陆shell执行exit退出时，shell会执行 ～/.bash_logout&lt;/p&gt;
+
+&lt;h3 id=&quot;2交互式非登陆shell&quot;&gt;2、交互式非登陆shell&lt;/h3&gt;
+&lt;p&gt;会首先执行 ～/.bashrc&lt;br /&gt;
+但是如果shell使用了‘-norc’选项则不会读取这个文件；&lt;br /&gt;
+相反的，如果用了’–rcfile file’选项，则会强制用指定的file来替代 ～/.bashrc配置。&lt;/p&gt;
+
+&lt;p&gt;~/.bash_profile通常会调用这个文件&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; ~/.bashrc &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;    &lt;span class=&quot;c&quot;&gt;# 判断home目录的.bashrc是普通文件的话 返回真&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; ~/.bashrc&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;   &lt;span class=&quot;c&quot;&gt;# 等于source ~/.bashrc  让home目录下的.bashrc里的设置生效&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;3非交互式&quot;&gt;3、非交互式&lt;/h3&gt;
+&lt;p&gt;非交互shell不执行初始化文件，从登陆shell处继承配置。&lt;/p&gt;
+
+&lt;h3 id=&quot;4使用sh命令&quot;&gt;4、使用sh命令&lt;/h3&gt;
+&lt;p&gt;无论交互式登陆还是非交互式登陆，使用sh命令都会首先尝试/etc/profile ，然后执行 ~/.profile, 而且使用sh，–norc是默认开启的。&lt;/p&gt;</content><author><name>Guu</name></author><category term="documentation" /><category term="sample" /><summary type="html"> 上次安装zookeeper启动服务失败时遇到了shell的变量配置文件加载顺序的问题，从而引出了登陆式和非登陆式shell、交互式和非交互式shell，今天对照着bash官方文档把相关概念整理一下。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/nederland.jpeg" /></entry><entry><title type="html">redis-trib构建redis集群</title><link href="http://localhost:4000/redis/redis-cluster.html" rel="alternate" type="text/html" title="redis-trib构建redis集群" /><published>2018-03-06T00:00:00+08:00</published><updated>2018-03-06T00:00:00+08:00</updated><id>http://localhost:4000/redis/redis-cluster</id><content type="html" xml:base="http://localhost:4000/redis/redis-cluster.html">&lt;h2 id=&quot;1-准备工作&quot;&gt;1. 准备工作&lt;/h2&gt;
 &lt;p&gt;在安装redis集群前，首先要做一些准备工作，因为redis-trib工具是redis官方提供的集群构建工具，这个工具是用ruby实现的，所以要先安装ruby&lt;/p&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; install ruby ruby-devel rubygems rpm-build   &lt;span class=&quot;c&quot;&gt;#安装ruby、gem&lt;/span&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; install ruby ruby-devel rubygems rpm-build   &lt;span class=&quot;c&quot;&gt;#安装ruby、gem&lt;/span&gt;
 gem update &lt;span class=&quot;nt&quot;&gt;--system&lt;/span&gt;   &lt;span class=&quot;c&quot;&gt;#更新gem   &lt;/span&gt;
 gem install redis &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; 3.3.5 &lt;span class=&quot;c&quot;&gt;#安装redis扩展&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;如果安装失败，执行如下两句命令修改源再试一次&lt;/p&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gem sources &lt;span class=&quot;nt&quot;&gt;--remove&lt;/span&gt; https://rubygems.org/
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gem sources &lt;span class=&quot;nt&quot;&gt;--remove&lt;/span&gt; https://rubygems.org/
 gem sources &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; https://ruby.taobao.org/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;安装完成后检查一下是否安装成功&lt;/p&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ruby &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ruby &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt;
 gem list &lt;span class=&quot;c&quot;&gt;#查看是否已安装redis扩展&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;2-安装redis集群&quot;&gt;2. 安装redis集群&lt;/h2&gt;
 &lt;ol&gt;
   &lt;li&gt;下载编译
-    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /home/install
+    &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /home/install
 wget http://download.redis.io/releases/redis-3.2.8.tar.gz &lt;span class=&quot;c&quot;&gt;#下载&lt;/span&gt;
 &lt;span class=&quot;nb&quot;&gt;tar&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-zxvf&lt;/span&gt; redis-3.2.8.tar.gz   &lt;span class=&quot;c&quot;&gt;#解压&lt;/span&gt;
 &lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;redis-3.2.8    &lt;span class=&quot;c&quot;&gt;#切换目录&lt;/span&gt;
@@ -24,7 +100,7 @@ make &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; make instal
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
   &lt;/li&gt;
   &lt;li&gt;创建cluster目录，这里以端口号命名，从7000-7005创建6个目录
-    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mkdir &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; /home/install/redis-3.2.8/cluster
+    &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mkdir &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; /home/install/redis-3.2.8/cluster
 &lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /home/install/redis-3.2.8/cluster
 mkdir 7000
 mkdir 7001
@@ -36,7 +112,7 @@ mkdir 7005
   &lt;/li&gt;
   &lt;li&gt;在每个目录下增加修改配置文件redis.conf
  例如7000的目录，复制一份redis.conf
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cd 7000
+    &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;7000
 cp /home/install/redis-3.2.8/redis.conf ./
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
     &lt;p&gt;对其配置进行修改如下内容：&lt;/p&gt;
@@ -50,39 +126,36 @@ cp /home/install/redis-3.2.8/redis.conf ./
   &lt;/li&gt;
   &lt;li&gt;启动六个实例
 举例第一个实例端口号为7000
-    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /home/install/redis-3.2.8/cluster/7000
+    &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /home/install/redis-3.2.8/cluster/7000
 ../../src/redis-server  ./redis.conf
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
     &lt;p&gt;启动第二个 7001&lt;/p&gt;
-    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /home/install/redis-3.2.8/cluster/7001
+    &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /home/install/redis-3.2.8/cluster/7001
 ../../src/redis-server  ./redis.conf
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-    &lt;p&gt;全部启用后，检查是否启用成功
-ps -ef | grep redis
-出现下图说明OK：
+    &lt;p&gt;全部启用后，检查是否启用成功&lt;/p&gt;
+    &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ps &lt;span class=&quot;nt&quot;&gt;-ef&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;grep &lt;/span&gt;redis
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+    &lt;p&gt;出现下图说明OK
 &lt;img src=&quot;/assets/img/20180306redis_cluster_start.jpg&quot; alt=&quot;alt text&quot; title=&quot;redis启用成功&quot; /&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;构建集群
-    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /home/install/redis-3.2.8/
+    &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /home/install/redis-3.2.8/
 ./src/redis-trib.rb create &lt;span class=&quot;nt&quot;&gt;--replicas&lt;/span&gt; 1 127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
     &lt;p&gt;&lt;img src=&quot;/assets/img/20180306redis_cluster_slot.jpg&quot; alt=&quot;alt text&quot; title=&quot;redis集群构建成功&quot; /&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;集群验证
-    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./src/redis-cli &lt;span class=&quot;nt&quot;&gt;-h127&lt;/span&gt;.0.0.1 &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 7003      加参数 &lt;span class=&quot;nt&quot;&gt;-C&lt;/span&gt; 可连接到集群
+    &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./src/redis-cli &lt;span class=&quot;nt&quot;&gt;-h127&lt;/span&gt;.0.0.1 &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 7003  &lt;span class=&quot;c&quot;&gt;#加参数 -C 可连接到集群&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;set &lt;/span&gt;hello world                       &lt;span class=&quot;c&quot;&gt;#可成功写入一个key &quot;hello&quot; , value 为 “world”&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-    &lt;p&gt;set hello world&lt;/p&gt;
+    &lt;p&gt;登到另一个实例上&lt;/p&gt;
+    &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./src/redis-cli &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt; 127.0.0.1 &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 7001
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt;get hello   &lt;span class=&quot;c&quot;&gt;#可成功读取值world 且指向7003&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+    &lt;p&gt;说明集群创建成功&lt;/p&gt;
   &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;可成功写入一个key “hello”  value 为 “world”&lt;/p&gt;
-
-&lt;p&gt;登到另一个实例上&lt;/p&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./src/redis-cli &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt; 127.0.0.1 &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 7001
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;get hello   ,可成功读取值world 且指向7003&lt;/p&gt;
-
-&lt;p&gt;说明集群创建成功&lt;/p&gt;</content><author><name>Guu</name></author><category term="documentation" /><category term="sample" /><summary type="html">1. 准备工作 在安装redis集群前，首先要做一些准备工作，因为redis-trib工具是redis官方提供的集群构建工具，这个工具是用ruby实现的，所以要先安装ruby yum -y install ruby ruby-devel rubygems rpm-build #安装ruby、gem gem update --system #更新gem gem install redis -v 3.3.5 #安装redis扩展 如果安装失败，执行如下两句命令修改源再试一次 gem sources --remove https://rubygems.org/ gem sources -a https://ruby.taobao.org/ 安装完成后检查一下是否安装成功 ruby -v gem list #查看是否已安装redis扩展</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/spools.jpg" /></entry><entry><title type="html">zookeeper单机&amp;amp;集群部署</title><link href="http://localhost:4000/zookeeper/zookeeper-env.html" rel="alternate" type="text/html" title="zookeeper单机&amp;集群部署" /><published>2018-03-05T00:00:00+08:00</published><updated>2018-03-05T00:00:00+08:00</updated><id>http://localhost:4000/zookeeper/zookeeper-env</id><content type="html" xml:base="http://localhost:4000/zookeeper/zookeeper-env.html">&lt;h2 id=&quot;单机模式&quot;&gt;单机模式：&lt;/h2&gt;
+&lt;/ol&gt;</content><author><name>Guu</name></author><category term="documentation" /><category term="sample" /><summary type="html">1. 准备工作 在安装redis集群前，首先要做一些准备工作，因为redis-trib工具是redis官方提供的集群构建工具，这个工具是用ruby实现的，所以要先安装ruby yum -y install ruby ruby-devel rubygems rpm-build #安装ruby、gem gem update --system #更新gem gem install redis -v 3.3.5 #安装redis扩展 如果安装失败，执行如下两句命令修改源再试一次 gem sources --remove https://rubygems.org/ gem sources -a https://ruby.taobao.org/ 安装完成后检查一下是否安装成功 ruby -v gem list #查看是否已安装redis扩展</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/spools.jpg" /></entry><entry><title type="html">zookeeper单机&amp;amp;集群部署</title><link href="http://localhost:4000/zookeeper/zookeeper-env.html" rel="alternate" type="text/html" title="zookeeper单机&amp;集群部署" /><published>2018-03-05T00:00:00+08:00</published><updated>2018-03-05T00:00:00+08:00</updated><id>http://localhost:4000/zookeeper/zookeeper-env</id><content type="html" xml:base="http://localhost:4000/zookeeper/zookeeper-env.html">&lt;h2 id=&quot;单机模式&quot;&gt;单机模式：&lt;/h2&gt;
 
 &lt;ol&gt;
   &lt;li&gt;
@@ -181,12 +254,11 @@ cd /home/install/zookeeper/bin
 成功则现实节点身份如下：
 &lt;img src=&quot;/assets/img/20180305zk_status_leader.jpg&quot; alt=&quot;alt text&quot; title=&quot;zookeeper 角色 leader&quot; /&gt;
 &lt;img src=&quot;/assets/img/20180305zk_status_follower.jpg&quot; alt=&quot;alt text&quot; title=&quot;zookeeper 角色 follower&quot; /&gt;&lt;/li&gt;
-&lt;/ol&gt;</content><author><name>Guu</name></author><category term="documentation" /><category term="sample" /><summary type="html">单机模式：</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/cutting.jpg" /></entry><entry><title type="html">zookeeper_server.pid: 没有那个文件或目录</title><link href="http://localhost:4000/zookeeper/zookeeper-tip.html" rel="alternate" type="text/html" title="zookeeper_server.pid: 没有那个文件或目录" /><published>2018-03-01T00:00:00+08:00</published><updated>2018-03-01T00:00:00+08:00</updated><id>http://localhost:4000/zookeeper/zookeeper-tip</id><content type="html" xml:base="http://localhost:4000/zookeeper/zookeeper-tip.html">&lt;p&gt;s
-今天捣鼓zookeeper，安装完成启动时却出现了一个奇怪的问题，提示“…/zookeeper/data/zookeeper_server.pid: 没有那个文件或目录 FAILED TO WRITE PID”。如下图：
+&lt;/ol&gt;</content><author><name>Guu</name></author><category term="documentation" /><category term="sample" /><summary type="html">单机模式：</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/cutting.jpg" /></entry><entry><title type="html">zookeeper_server.pid: 没有那个文件或目录</title><link href="http://localhost:4000/zookeeper/zookeeper-tip.html" rel="alternate" type="text/html" title="zookeeper_server.pid: 没有那个文件或目录" /><published>2018-03-01T00:00:00+08:00</published><updated>2018-03-01T00:00:00+08:00</updated><id>http://localhost:4000/zookeeper/zookeeper-tip</id><content type="html" xml:base="http://localhost:4000/zookeeper/zookeeper-tip.html">&lt;p&gt;今天捣鼓zookeeper，安装完成启动时却出现了一个奇怪的问题，提示“…/zookeeper/data/zookeeper_server.pid: 没有那个文件或目录 FAILED TO WRITE PID”。如下图：
 &lt;img src=&quot;/assets/img/20180301zk_start_failed.png&quot; alt=&quot;alt text&quot; title=&quot;zk启用失败截图&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;既然提示了103行报错，那索性到zkServe中找找原因吧&lt;/p&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;start&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;start&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
     &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt;  &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Starting zookeeper ... &quot;&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$ZOOPIDFILE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then
       if &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;kill&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-0&lt;/span&gt; &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$ZOOPIDFILE&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; /dev/null 2&amp;gt;&amp;amp;1&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then
@@ -217,7 +289,7 @@ cd /home/install/zookeeper/bin
 置，所以脚本执行/usr/local/zookeeper3.4/bin/zkServer.sh start 启动zookeeper失败了
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;也就是说ZK启动是脚本执行，脚本执行是非登陆shell，非登陆shell读取 /etc/bash .bashrc 和 ~/.bashrc ，我却只设置了/etc/profile，环境变量不会被脚本使用到，当然会因为找不到java启用失败了。&lt;/p&gt;</content><author><name>Guu</name></author><category term="documentation" /><category term="sample" /><summary type="html">s 今天捣鼓zookeeper，安装完成启动时却出现了一个奇怪的问题，提示“…/zookeeper/data/zookeeper_server.pid: 没有那个文件或目录 FAILED TO WRITE PID”。如下图：</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/cityNight.jpg" /></entry><entry><title type="html">Locust简介及其特点</title><link href="http://localhost:4000/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/Locust-1.html" rel="alternate" type="text/html" title="Locust简介及其特点" /><published>2018-02-28T00:00:00+08:00</published><updated>2018-02-28T00:00:00+08:00</updated><id>http://localhost:4000/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/Locust-1</id><content type="html" xml:base="http://localhost:4000/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/Locust-1.html">&lt;p&gt;Locust是一个简单易用的分布式压测工具，它摒弃了进程和线程，是完全基于事件驱动的，在单机就能模拟上千的并发用户。一般基于事件驱动的压测工具都会使用回调函数的方式，它没有使用回调函数，而是使用了协程机制（具体是用python的gevent实现的），也正因为此，Locust才拥有了在单机模拟数千并发的能力。&lt;/p&gt;
+&lt;p&gt;也就是说ZK启动是脚本执行，脚本执行是非登陆shell，非登陆shell读取 /etc/bash .bashrc 和 ~/.bashrc ，我却只设置了/etc/profile，环境变量不会被脚本使用到，当然会因为找不到java启用失败了。&lt;/p&gt;</content><author><name>Guu</name></author><category term="documentation" /><category term="sample" /><summary type="html">今天捣鼓zookeeper，安装完成启动时却出现了一个奇怪的问题，提示“…/zookeeper/data/zookeeper_server.pid: 没有那个文件或目录 FAILED TO WRITE PID”。如下图：</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/cityNight.jpg" /></entry><entry><title type="html">Locust简介及其特点</title><link href="http://localhost:4000/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/Locust-1.html" rel="alternate" type="text/html" title="Locust简介及其特点" /><published>2018-02-28T00:00:00+08:00</published><updated>2018-02-28T00:00:00+08:00</updated><id>http://localhost:4000/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/Locust-1</id><content type="html" xml:base="http://localhost:4000/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/Locust-1.html">&lt;p&gt;Locust是一个简单易用的分布式压测工具，它摒弃了进程和线程，是完全基于事件驱动的，在单机就能模拟上千的并发用户。一般基于事件驱动的压测工具都会使用回调函数的方式，它没有使用回调函数，而是使用了协程机制（具体是用python的gevent实现的），也正因为此，Locust才拥有了在单机模拟数千并发的能力。&lt;/p&gt;
 
 &lt;h2 id=&quot;特点&quot;&gt;特点&lt;/h2&gt;
 &lt;h3 id=&quot;使用python编写测试脚本&quot;&gt;使用python编写测试脚本&lt;/h3&gt;
@@ -762,22 +834,4 @@ image:
   &lt;li&gt;&lt;a href=&quot;https://daringfireball.net/projects/markdown/basics&quot;&gt;Markdown Basics&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://github.github.com/gfm/&quot;&gt;GitHub Flavoured Markdown Spec&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://help.github.com/articles/basic-writing-and-formatting-syntax/#lists&quot;&gt;Basic writing and formatting syntax&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Paul Le</name></author><category term="documentation" /><category term="sample" /><summary type="html">Markdown Support</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/cards.jpg" /></entry><entry><title type="html">Learning Resources</title><link href="http://localhost:4000/journal/learning-resources.html" rel="alternate" type="text/html" title="Learning Resources" /><published>2013-10-10T00:00:00+08:00</published><updated>2013-10-10T00:00:00+08:00</updated><id>http://localhost:4000/journal/learning-resources</id><content type="html" xml:base="http://localhost:4000/journal/learning-resources.html">&lt;p&gt;The beauty of computer programming is that you do not need to formally go to school to learn how to program. You can learn almost everything that you would need to know online, and for free. The following resources are some that I have used personally, that I highly recommend, for anyone looking to learn more about computer programming.&lt;/p&gt;
-
-&lt;h2 id=&quot;free-code-camp&quot;&gt;&lt;a href=&quot;https://www.freecodecamp.org/&quot;&gt;Free Code Camp&lt;/a&gt;&lt;/h2&gt;
-
-&lt;p&gt;My personal favourite for learning full stack web development. They offer a great front and back end curriculum that requires you to complete a variety of projects in order to apply the knowledge that you learn during the lessons. As a bonus, at the end of the curriculum you will have a few impressive projects under your belt for your portfolio.&lt;/p&gt;
-
-&lt;h2 id=&quot;codecademy&quot;&gt;&lt;a href=&quot;https://www.codecademy.com/&quot;&gt;Codecademy&lt;/a&gt;&lt;/h2&gt;
-
-&lt;p&gt;Not only does Codecademy have many great courses on various web development languages such as &lt;a href=&quot;https://www.codecademy.com/learn/learn-html&quot;&gt;HTML&lt;/a&gt;, &lt;a href=&quot;https://www.codecademy.com/learn/learn-css&quot;&gt;CSS&lt;/a&gt;, and &lt;a href=&quot;https://www.codecademy.com/learn/introduction-to-javascript&quot;&gt;JavaScript&lt;/a&gt;, but they even offer a course on &lt;a href=&quot;https://www.codecademy.com/learn/deploy-a-website&quot;&gt;how to deploy a Jekyll site&lt;/a&gt;. If you are completely new to Jekyll, I would recommend working through that course as a great start for learning how to deploy your Jekyll site.&lt;/p&gt;
-
-&lt;h2 id=&quot;khan-academy&quot;&gt;&lt;a href=&quot;https://www.khanacademy.org/&quot;&gt;Khan Academy&lt;/a&gt;&lt;/h2&gt;
-
-&lt;p&gt;A great resource not only for learning mathematics (what most people probably know Khan Academy for), but also &lt;a href=&quot;https://www.khanacademy.org/computing/computer-programming&quot;&gt;computer programming&lt;/a&gt;. What Khan Academy offers that is different from the other two above resources is that it offers courses in &lt;a href=&quot;https://www.khanacademy.org/computing/computer-science&quot;&gt;computer science related&lt;/a&gt; topics, such as &lt;a href=&quot;https://www.khanacademy.org/computing/computer-science/algorithms&quot;&gt;algorithms&lt;/a&gt; and &lt;a href=&quot;https://www.khanacademy.org/computing/computer-science/cryptography&quot;&gt;cryptography&lt;/a&gt;. This is unique in that most online resources mostly focus on the programming side of things.&lt;/p&gt;</content><author><name>Paul Le</name></author><category term="documentation" /><category term="sample" /><summary type="html">The beauty of computer programming is that you do not need to formally go to school to learn how to program. You can learn almost everything that you would need to know online, and for free. The following resources are some that I have used personally, that I highly recommend, for anyone looking to learn more about computer programming.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/spools.jpg" /></entry><entry><title type="html">About the Author</title><link href="http://localhost:4000/journal/about-the-author.html" rel="alternate" type="text/html" title="About the Author" /><published>2013-04-04T00:00:00+08:00</published><updated>2013-04-04T00:00:00+08:00</updated><id>http://localhost:4000/journal/about-the-author</id><content type="html" xml:base="http://localhost:4000/journal/about-the-author.html">&lt;p&gt;Hi there! I’m Paul. I’m a physics major turned programmer. Ever since I first learned how to program while taking a scientific computing for physics course, I have pursued programming as a passion, and as a career. Below is a compilation of some of my favourite things that I have built over the years. You may find everything else on my &lt;a href=&quot;http://github.com/lenpaul&quot; target=&quot;_blank&quot;&gt;Github&lt;/a&gt; and &lt;a href=&quot;https://codepen.io/lenpaul&quot; target=&quot;_blank&quot;&gt;Code Pen&lt;/a&gt; profiles.&lt;/p&gt;
-
-&lt;h3 id=&quot;jekyll-website-theme-for-blogging&quot;&gt;Jekyll Website Theme for Blogging&lt;/h3&gt;
-
-&lt;p&gt;Millennial is a minimalist Jekyll blog theme that I built from scratch. The purpose of this theme is to provide a simple, clean, content-focused publishing platform for a publication or blog. This theme is currently being used by about three dozen people, with this number growing every day.&lt;/p&gt;
-
-&lt;p&gt;Feel free to check out &lt;a href=&quot;https://lenpaul.github.io/Millennial/&quot; target=&quot;_blank&quot;&gt;the demo&lt;/a&gt;, where you’ll also find instructions on &lt;a href=&quot;https://lenpaul.github.io/Millennial/documentation/Installation-Guide.html&quot;&gt;how to use install&lt;/a&gt; and use the theme.&lt;/p&gt;</content><author><name>Paul Le</name></author><category term="documentation" /><category term="sample" /><summary type="html">Hi there! I’m Paul. I’m a physics major turned programmer. Ever since I first learned how to program while taking a scientific computing for physics course, I have pursued programming as a passion, and as a career. Below is a compilation of some of my favourite things that I have built over the years. You may find everything else on my Github and Code Pen profiles.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/cutting.jpg" /></entry></feed>
+&lt;/ul&gt;</content><author><name>Paul Le</name></author><category term="documentation" /><category term="sample" /><summary type="html">Markdown Support</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/cards.jpg" /></entry></feed>

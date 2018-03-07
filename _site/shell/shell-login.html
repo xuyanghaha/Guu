@@ -1,0 +1,235 @@
+<!doctype html>
+<html>
+
+<head>
+
+  <title>
+    
+      shell的交互式和非交互式,登陆和非登陆 | Guu's Neverland
+    
+  </title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/syntax.css">
+  <!-- Use Atom -->
+  <link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Guu's Neverland" />
+  <!-- Use RSS-2.0 -->
+  <!--<link href="/rss-feed.xml" type="application/rss+xml" rel="alternate" title="Guu's Neverland | (๑•́ ∀ •̀๑)"/>
+  //-->
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Code+Pro">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quattrocento+Sans">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <script type="text/javascript" async
+    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+  </script>
+
+  <!-- Google Analytics -->
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-112060364-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <!-- Use Jekyll SEO plugin -->
+
+</head>
+
+
+<body>
+
+  <div class="container">
+    <header class="masthead">
+  <h3 class="masthead-title">
+    <a href="/">Guu's Neverland</a>
+    <small class="masthead-subtitle">(๑•́ ∀ •̀๑)</small>
+    <div class="menu">
+  <nav class="menu-content">
+    
+      <a href="/menu/writing.html">文章列表</a>
+    
+  </nav>
+  <nav class="social-icons">
+    
+  </nav>
+</div>
+
+  </h3>
+</header>
+
+
+    <div class="post-container">
+      <h1>
+  shell的交互式和非交互式,登陆和非登陆
+</h1>
+
+
+  <img src="/assets/img/nederland.jpeg">
+
+
+<p> 上次安装zookeeper启动服务失败时遇到了shell的变量配置文件加载顺序的问题，从而引出了登陆式和非登陆式shell、交互式和非交互式shell，今天对照着bash官方文档把相关概念整理一下。</p>
+
+<h2 id="登陆shell和非登陆shell">登陆shell和非登陆shell</h2>
+<p><strong>登陆shell</strong>：有关登陆shell官网给出了这样的定义：</p>
+<blockquote>
+  <p>A login shell is one whose first character of argument zero is ‘-’, or one invoked with the –login option.</p>
+</blockquote>
+
+<p>登陆shell指的是启用时传递的第0个参数为’-‘开头的shell，或者使用’–login’参数启用的shell。</p>
+
+<p> 简单点解释，有两种情况可以称之为登陆shell，第一种是shell的第0个参数，也就是当前shell的名字以’-‘开头，例如：</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>root@localhost ~]# <span class="nb">echo</span> <span class="nv">$0</span>
+<span class="nt">-bash</span>
+
+<span class="c"># 或者也可这样查询，$$代表当前进程号</span>
+<span class="o">[</span>root@localhost ~]# ps | <span class="nb">grep</span> <span class="nv">$$</span>
+65211 ttys000    0:00.03 <span class="nt">-bash</span>      <span class="c">#这里进程名以‘-’开头</span>
+</code></pre></div></div>
+<p>第二种情况是启用shell时使用了’–login’参数：</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ps |grep <span class="nv">$$</span>
+11101 pts/1    00:00:00 bash  <span class="c">#当前bash进程为11101</span>
+
+bash <span class="nt">--login</span>       <span class="c">#启用一个bash 使用'--login'参数</span>
+ps                 <span class="c">#查看所有进程</span>
+<span class="nt">--------------------------------</span>
+PID TTY          TIME CMD
+11101 pts/1    00:00:00 bash
+11117 pts/1    00:00:00 bash   <span class="c">#显示增加了一个bash进程，这就是一个登陆shell</span>
+11130 pts/1    00:00:00 ps
+</code></pre></div></div>
+
+<p><strong>非登陆shell：</strong>如果直接用bash启用一个shell，这就是非登陆shell了。</p>
+
+<p> 还有一个办法能看出当前shell是登陆还是非登陆，那就是exit命令和logout命令.<br />
+<strong>exit</strong> 可以退出登陆和非登陆两种shell，如果退出了登陆shell 会返回logout，如果是非登陆会返回exit.<br />
+<strong>logout</strong> 只能退出登陆shell ,如果用logout退出非登陆shell 会提示如下：</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bash: <span class="nb">logout</span>: not login shell: use <span class="sb">`</span><span class="nb">exit</span><span class="sb">`</span>
+</code></pre></div></div>
+<p>打开一个终端或者通过ssh远程登陆，通常我们使用的都是非登陆的shell，那么登陆和非登陆有什么区别呢,主要是加载环境变量配置文件的不同，我们后面再讲。</p>
+
+<h2 id="交互式和非交互式">交互式和非交互式</h2>
+<p><strong>交互式shell：</strong>就是在终端上执行，shell等待你的输入，并且立即执行你提交的命令。这种模式被称作交互式是因为shell与用户进行交互。这种模式也是大多数用户非常熟悉的：登录、执行一些命令、退出。当你退出后，shell也终止了。<br />
+<strong>非交互式shell：</strong>运行bash script，执行脚本中的命令 ，读到文件末尾结束EOF，这就是非交互式shell。</p>
+
+<p>怎么判断是否是交互式呢，查看 $- ，它代表着当前shell的选项标志。查看返回的字符串中是否有字母i ,有则说明是交互式shell</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>root@localhost ~]# <span class="nb">echo</span> <span class="nv">$-</span>
+himBH              <span class="c">#返回有i 为交互式</span>
+</code></pre></div></div>
+
+<h2 id="不同模式配置文件读取的不同">不同模式配置文件读取的不同</h2>
+<p> 首先说明一下，其实登陆非登陆、交互式非交互式不过是从两个不同的角度看shell，这两个属性是没有冲突的，可以有登陆交互式shell，可以有登陆非交互式shell各种情况。下面来了解一下不同情况下对应的配置文件读取规则：</p>
+
+<h3 id="1交互式登陆shell">1、交互式登陆shell</h3>
+<p>启用时按照如下顺序读取执行配置文件，前提是文件存在且可读：<br />
+/etc/profile<br />
+～/.bash_profile<br />
+~/.bash_login<br />
+～/.profile<br />
+除非当前shell在启用时使用了—noprofile选项，如果用了这个选项，则shell不会加载以上所有配置文件。<br />
+另外，交互式登陆shell或者非交互式登陆shell执行exit退出时，shell会执行 ～/.bash_logout</p>
+
+<h3 id="2交互式非登陆shell">2、交互式非登陆shell</h3>
+<p>会首先执行 ～/.bashrc<br />
+但是如果shell使用了‘-norc’选项则不会读取这个文件；<br />
+相反的，如果用了’–rcfile file’选项，则会强制用指定的file来替代 ～/.bashrc配置。</p>
+
+<p>~/.bash_profile通常会调用这个文件</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="o">[</span> <span class="nt">-f</span> ~/.bashrc <span class="o">]</span><span class="p">;</span>    <span class="c"># 判断home目录的.bashrc是普通文件的话 返回真</span>
+	<span class="k">then</span> <span class="nb">.</span> ~/.bashrc<span class="p">;</span>   <span class="c"># 等于source ~/.bashrc  让home目录下的.bashrc里的设置生效</span>
+<span class="k">fi</span>
+</code></pre></div></div>
+
+<h3 id="3非交互式">3、非交互式</h3>
+<p>非交互shell不执行初始化文件，从登陆shell处继承配置。</p>
+
+<h3 id="4使用sh命令">4、使用sh命令</h3>
+<p>无论交互式登陆还是非交互式登陆，使用sh命令都会首先尝试/etc/profile ，然后执行 ~/.profile, 而且使用sh，–norc是默认开启的。</p>
+
+
+<span class="post-date">
+  Written on
+  
+  March
+  7th,
+  2018
+  by
+  
+    Guu
+  
+</span>
+
+<div class="related">
+  <h1 >您可能还喜欢：</h1>
+  
+  <ul class="related-posts">
+    
+      
+        
+        
+      
+        
+          <li>
+            <h3>
+              <a href="/redis/redis-cluster.html">
+                redis-trib构建redis集群
+                <!--<img src="http://localhost:4000/images/">-->
+                <!--<small>March 6, 2018</small>-->
+              </a>
+            </h3>
+          </li>
+          
+        
+      
+        
+          <li>
+            <h3>
+              <a href="/zookeeper/zookeeper-env.html">
+                zookeeper单机&集群部署
+                <!--<img src="http://localhost:4000/images/">-->
+                <!--<small>March 5, 2018</small>-->
+              </a>
+            </h3>
+          </li>
+          
+        
+      
+    
+      
+        
+        
+      
+        
+        
+      
+        
+        
+      
+    
+  </ul>
+</div>
+
+
+
+
+    </div>
+
+    <footer class="footer">
+  
+  <div class="post-date"><a href="/menu/about.html">Guu's Neverland | (๑•́ ∀ •̀๑) by Guu</a></div>
+</footer>
+
+
+  </div>
+
+</body>
+</html>
